@@ -38,13 +38,38 @@ function listItems(){
 
 });
 
-	// connection.end();
+	
 }
 
 function ask(){
 	inquirer.prompt({
+		name: 'action',
+		type: 'input',
+		message: 'Enter the ID of the product you want to buy',
+	 }).then(function(answer) {			
 
-
-		console.log('check');
+	 	console.log(answer.action);
+		amount();
 	});
+
+
+}
+
+
+function amount(){
+	inquirer.prompt({
+		name: 'amount',
+		type: 'input',
+		message: 'How much would you like to purchase?',
+	 }).then(function(response) {			
+
+	 	console.log(response.amount);
+		console.log('checkTwo');
+
+		connection.end();
+	});
+
+
+
+
 }
