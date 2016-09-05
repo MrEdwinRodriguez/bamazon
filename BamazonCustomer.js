@@ -49,14 +49,15 @@ function ask(){
 	 }).then(function(answer) {			
 
 	 	console.log(answer.action);
-		amount();
+	 	var idNum = answer.action - 1;
+		amount(idNum);
 	});
 
 
 }
 
 
-function amount(){
+function amount(selID){
 	inquirer.prompt({
 		name: 'amount',
 		type: 'input',
@@ -66,7 +67,7 @@ function amount(){
 	 	console.log(response.amount);
 		console.log('checkTwo');
 		var amnt =  response.amount;
-		checkInventory();
+		checkInventory(selID, amnt);
 		// return
 		// connection.end();
 	});
@@ -74,13 +75,14 @@ function amount(){
 }
 
 
-function checkInventory(){
+function checkInventory(itemSelected, number){
 
 	connection.query('SELECT ID, Product_Name, STOCK_QUANTITY FROM bamazon.products', function(err,res){   
     if(err) throw err;
 
     console.log(res)
-    console.log(res[0].STOCK_QUANTITY);
+    console.log('amount ordered' + number);
+    console.log(res[itemSelected].STOCK_QUANTITY);
     // console.log(amnt)
 
 });
