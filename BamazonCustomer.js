@@ -65,11 +65,25 @@ function amount(){
 
 	 	console.log(response.amount);
 		console.log('checkTwo');
-
-		connection.end();
+		var amnt =  response.amount;
+		checkInventory();
+		// return
+		// connection.end();
 	});
 
+}
 
+
+function checkInventory(){
+
+	connection.query('SELECT ID, Product_Name, STOCK_QUANTITY FROM bamazon.products', function(err,res){   
+    if(err) throw err;
+
+    console.log(res)
+    console.log(res[0].STOCK_QUANTITY);
+    // console.log(amnt)
+
+});
 
 
 }
