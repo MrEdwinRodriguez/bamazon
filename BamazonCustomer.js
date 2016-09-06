@@ -9,6 +9,7 @@ var connection = mysql.createConnection({
     database: "bamazon"
 })
 
+
 connection.connect(function(err) {
     if (err) throw err;
     listItems();
@@ -16,7 +17,7 @@ connection.connect(function(err) {
 })
 
 
-
+// reads the SQL table and list items
 function listItems(){
 
 	connection.query('SELECT ID, Product_Name, Price FROM bamazon.products', function(err,res){   
@@ -41,6 +42,7 @@ function listItems(){
 	
 }
 
+// ask custumer which item they want to purchase
 function ask(){
 	inquirer.prompt({
 		name: 'action',
@@ -50,13 +52,14 @@ function ask(){
 
 	 	console.log(answer.action);
 	 	var idNum = answer.action - 1;
+
 		amount(idNum);
 	});
 
 
 }
 
-
+// ask customer how much they would like to purchase
 function amount(selID){
 	inquirer.prompt({
 		name: 'amount',
@@ -74,16 +77,41 @@ function amount(selID){
 
 }
 
-
+// checks the inventory and makes sure there is enought to fulfull the order
 function checkInventory(itemSelected, number){
 
 	connection.query('SELECT ID, Product_Name, STOCK_QUANTITY FROM bamazon.products', function(err,res){   
     if(err) throw err;
 
     console.log(res)
-    console.log('amount ordered' + number);
+    console.log('amount ordered' + ' ' + number);
     console.log(res[itemSelected].STOCK_QUANTITY);
-    // console.log(amnt)
+
+    if(number < res[itemSelected].STOCK_QUANTITY){
+
+    	console.log('function will complete order')
+
+    	var newQuantity = res[itemSelected].STOCK_QUANTITY - number;
+    	console.log(newQuantity)
+    	connection.query("UPDATE products SET ? WHERE ?", [{
+    		STOCK_QUANTITY: newQuantity
+			}, {
+    		flavor: "STOCK_QUANTITY"
+			}], function(err, outcome) {
+				console.log('check')
+				// console.log(res[itemSelected].STOCK_QUANTITY)
+				console.log(outcome);
+			});
+
+
+
+
+    }else
+    {
+    	console.log('Insufficient quantity!  Please choose an amount that does not exceed' + ' ' + res[itemSelected].STOCK_QUANTITY);
+  		// asks the customer again to purchase a lesser amount
+  		// amount(idNum);
+    }
 
 });
 
