@@ -1,6 +1,8 @@
 var mysql = require('mysql');
 var inquirer = require ('inquirer');
 
+var idNum = 'string';
+
 var connection = mysql.createConnection({
     host: "localhost",
     port: 3306,
@@ -49,11 +51,12 @@ function ask(){
 		type: 'input',
 		message: 'Enter the ID of the product you want to buy',
 	 }).then(function(answer) {			
-
+	 	console.log(answer);
 	 	console.log(answer.action);
 	 	var idNum = answer.action - 1;
-
+	 	
 		amount(idNum);
+
 	});
 
 
@@ -89,20 +92,34 @@ function checkInventory(itemSelected, number){
 
     if(number < res[itemSelected].STOCK_QUANTITY){
 
-    	console.log('function will complete order')
+    	
     	console.log(res[itemSelected].Product_Name)
+
     	var newQuantity = res[itemSelected].STOCK_QUANTITY - number;
     	console.log(newQuantity)
-    	connection.query("UPDATE products SET ? WHERE ?", [{
-    	// connection.query("UPDATE products WHERE ?", [{	
-    		STOCK_QUANTITY: newQuantity
-			}, {
-    		Product_Name: "res[itemSelected].Product_Name"
-			}], function(err, outcome) {
+
+    	var sql = "UPDATE products SET STOCK_QUANTITY = " + newQuantity + " WHERE ID = " + itemSelected + ";"
+
+    	connection.query(sql, function(err, outcome) {
 				console.log('check')
-			
 				console.log(outcome);
+				console.log('new quant should be ' + newQuantity)
+				console.log('actual' + ' ' + res[itemSelected].STOCK_QUANTITY);
+
 			});
+
+   //  	connection.query("UPDATE products SET ? WHERE ?", [{
+   //  		STOCK_QUANTITY: newQuantity
+			// }, {
+   //  		// Product_Name: "res[itemSelected].Product_Name"
+   //  		ID: itemSelected
+			// }], function(err, outcome) {
+			// 	console.log('check')
+			// 	console.log(outcome);
+			// 	console.log('new quant should be ' + newQuantity)
+			// 	console.log('actual' + ' ' + res[itemSelected].STOCK_QUANTITY);
+
+			// });
 
 
 
@@ -118,3 +135,28 @@ function checkInventory(itemSelected, number){
 
 
 }
+
+
+// constructor for purchase
+// function Purchase (id, product, price){
+
+// 	this.id = id;
+// 	this.product = product;
+// 	this.price = price;
+// 	this.quantity = function(){
+// 		//quantity funciton goes here
+		
+// 	};
+// 	this.inventoryCheck = function (){
+// 				//check inventory function goes here
+// 			}
+
+// 	this.cost = function(){
+// 		//total cost to customer
+// 	};		
+// };
+//  //values come from original prompt
+
+
+
+// var myPurchase = new Purchase ()
