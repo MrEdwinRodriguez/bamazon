@@ -90,16 +90,17 @@ function checkInventory(itemSelected, number){
     if(number < res[itemSelected].STOCK_QUANTITY){
 
     	console.log('function will complete order')
-
+    	console.log(res[itemSelected].Product_Name)
     	var newQuantity = res[itemSelected].STOCK_QUANTITY - number;
     	console.log(newQuantity)
     	connection.query("UPDATE products SET ? WHERE ?", [{
+    	// connection.query("UPDATE products WHERE ?", [{	
     		STOCK_QUANTITY: newQuantity
 			}, {
-    		flavor: "STOCK_QUANTITY"
+    		Product_Name: "res[itemSelected].Product_Name"
 			}], function(err, outcome) {
 				console.log('check')
-				// console.log(res[itemSelected].STOCK_QUANTITY)
+			
 				console.log(outcome);
 			});
 
