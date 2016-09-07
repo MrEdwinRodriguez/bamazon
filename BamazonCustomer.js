@@ -54,7 +54,7 @@ function ask(){
 	 	console.log(answer);
 	 	console.log(answer.action);
 	 	var idNum = answer.action - 1;
-	 	// var idNum = answer.action;
+
 		amount(idNum);
 
 	});
@@ -74,8 +74,7 @@ function amount(selID){
 		console.log('checkTwo');
 		var amnt =  response.amount;
 		checkInventory(selID, amnt);
-		// return
-		// connection.end();
+
 	});
 
 }
@@ -83,10 +82,10 @@ function amount(selID){
 // checks the inventory and makes sure there is enought to fulfull the order
 function checkInventory(itemSelected, number){
 
-	connection.query('SELECT ID, Product_Name, STOCK_QUANTITY FROM bamazon.products', function(err,res){   
+	connection.query('SELECT ID, Product_Name, Price, STOCK_QUANTITY FROM bamazon.products', function(err,res){   
     if(err) throw err;
 
-    console.log(res)
+    // console.log(res)
     console.log('amount ordered' + ' ' + number);
     console.log(res[itemSelected].STOCK_QUANTITY);
 
@@ -98,15 +97,16 @@ function checkInventory(itemSelected, number){
     	var newQuantity = res[itemSelected].STOCK_QUANTITY - number;
     	console.log(newQuantity)
 
-    	// var sql = "UPDATE products SET STOCK_QUANTITY = " + newQuantity + " WHERE ID = " + itemSelected + ";"
+    
     	var sql = "UPDATE products SET STOCK_QUANTITY = " + newQuantity + " WHERE ID = " + itemS + ";"
     	connection.query(sql, function(err, outcome) {
 				
 				console.log(outcome);
 				console.log('new quant should be ' + newQuantity)
-				console.log('actual' + ' ' + res[itemSelected].STOCK_QUANTITY);
+				totalCost(res[itemSelected].Price, number)
 
 			});
+
 
 
 
@@ -122,6 +122,14 @@ function checkInventory(itemSelected, number){
 
 }
 
+
+function totalCost (price, amount){
+
+	// get price here
+	var tax = 1.07
+	var total = price*amount*tax;
+	console.log('your total cost is:' + ' ' + total);
+}
 
 // constructor for purchase
 // function Purchase (id, product, price){
