@@ -54,7 +54,7 @@ function ask(){
 	 	console.log(answer);
 	 	console.log(answer.action);
 	 	var idNum = answer.action - 1;
-	 	
+	 	// var idNum = answer.action;
 		amount(idNum);
 
 	});
@@ -92,35 +92,21 @@ function checkInventory(itemSelected, number){
 
     if(number < res[itemSelected].STOCK_QUANTITY){
 
-    	
+    	var itemS = itemSelected +1;
     	console.log(res[itemSelected].Product_Name)
 
     	var newQuantity = res[itemSelected].STOCK_QUANTITY - number;
     	console.log(newQuantity)
 
-    	var sql = "UPDATE products SET STOCK_QUANTITY = " + newQuantity + " WHERE ID = " + itemSelected + ";"
-
+    	// var sql = "UPDATE products SET STOCK_QUANTITY = " + newQuantity + " WHERE ID = " + itemSelected + ";"
+    	var sql = "UPDATE products SET STOCK_QUANTITY = " + newQuantity + " WHERE ID = " + itemS + ";"
     	connection.query(sql, function(err, outcome) {
-				console.log('check')
+				
 				console.log(outcome);
 				console.log('new quant should be ' + newQuantity)
 				console.log('actual' + ' ' + res[itemSelected].STOCK_QUANTITY);
 
 			});
-
-   //  	connection.query("UPDATE products SET ? WHERE ?", [{
-   //  		STOCK_QUANTITY: newQuantity
-			// }, {
-   //  		// Product_Name: "res[itemSelected].Product_Name"
-   //  		ID: itemSelected
-			// }], function(err, outcome) {
-			// 	console.log('check')
-			// 	console.log(outcome);
-			// 	console.log('new quant should be ' + newQuantity)
-			// 	console.log('actual' + ' ' + res[itemSelected].STOCK_QUANTITY);
-
-			// });
-
 
 
 
