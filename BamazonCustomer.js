@@ -1,7 +1,8 @@
 var mysql = require('mysql');
 var inquirer = require ('inquirer');
 
-var idNum = 'string';
+// var idNum = 'string';
+
 
 var connection = mysql.createConnection({
     host: "localhost",
@@ -101,7 +102,7 @@ function checkInventory(itemSelected, number){
     	var sql = "UPDATE products SET STOCK_QUANTITY = " + newQuantity + " WHERE ID = " + itemS + ";"
     	connection.query(sql, function(err, outcome) {
 				
-				console.log(outcome);
+				
 				console.log('new quant should be ' + newQuantity)
 				totalCost(res[itemSelected].Price, number)
 
@@ -126,9 +127,12 @@ function checkInventory(itemSelected, number){
 function totalCost (price, amount){
 
 	// get price here
-	var tax = 1.07
+	var tax = 1.07;
 	var total = price*amount*tax;
-	console.log('your total cost is:' + ' ' + total);
+	
+	console.log('your total cost is: $' + ' ' + total.toFixed(2));
+	// destroy();
+	process.exit(1);
 }
 
 // constructor for purchase
