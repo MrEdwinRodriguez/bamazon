@@ -8,7 +8,7 @@ var connection = mysql.createConnection({
     host: "localhost",
     port: 3306,
     user: "root", //Your username
-    password: "sigma101", //Your password
+    password: "", //Your password
     database: "bamazon"
 })
 
@@ -53,16 +53,8 @@ function ask() {
         message: 'Enter the ID of the product you want to buy?',
     }).then(function(answer) {
 
-        if(typeof answer.action == 'string'){
-            consoel.log('hello')
-        }else{
-            console.log('bye')
-        }
-
         var idNum = answer.action - 1;
-
         amount(idNum);
-
     });
 
 }

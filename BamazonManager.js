@@ -31,6 +31,7 @@ function menu(){
 	
 }
 
+// ask manager what they want to do
 function ask() {
     inquirer.prompt({
         name: 'action',
@@ -38,23 +39,22 @@ function ask() {
         message: 'What would you like to do (press number)?',
     }).then(function(answer) {
 
-       console.log(answer.action)
 
          switch(answer.action) {
-            case 1:
-                artistSearch();
+            case '1':
+                viewAll();
             break;
             
-            case 2:
-                multiSearch();
+            case '2':
+                lowInventory();
             break;
             
-            case 3:
-                rangeSearch();
+            case '3':
+                addInventory();
             break;
             
-            case 4:
-                songSearch();
+            case '4':
+                addProduct();
             break;
 
             default:
@@ -62,8 +62,51 @@ function ask() {
             break;
         }
 
-        
+
+    });
+}
+
+function viewAll(){
+
+    connection.query('SELECT ID, Product_Name, Price, STOCK_QUANTITY FROM bamazon.products', function(err, res) {
+        if (err) throw err;
+
+        // console.log(res)
+           for (i = 0; i < res.length; i++) {
+           		// console.log(i);
+            console.log(res[i].ID, res[i].Product_Name, res[i].Price, res[i].STOCK_QUANTITY);
+
+           
+            }
+
+    });
+	
+}
+
+function lowInventory(){
+
+	    connection.query('SELECT ID, Product_Name, Price, STOCK_QUANTITY FROM bamazon.products', function(err, response) {
+        if (err) throw err;
+
+         for (i = 0; i < response.length; i++) {
+         	
+    			if(response[i].STOCK_QUANTITY < 10)
+    				
+    				console.log(response[i].ID, response[i].Product_Name, response[i].Price, response[i].STOCK_QUANTITY);
+    				
+            	}
+
     });
 
 }
 
+function addInventory(){
+
+	    connection.query('UPDATE bamazon.products SET STOCK_QUANTITY ? WHERE ID ?', function(err, response) {
+        if (err) throw err;
+
+    					
+
+    });
+
+}
