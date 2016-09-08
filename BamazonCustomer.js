@@ -1,7 +1,7 @@
 var mysql = require('mysql');
 var inquirer = require ('inquirer');
 
-// var idNum = 'string';
+
 
 
 var connection = mysql.createConnection({
@@ -52,8 +52,9 @@ function ask(){
 		type: 'input',
 		message: 'Enter the ID of the product you want to buy',
 	 }).then(function(answer) {			
-	 	console.log(answer);
-	 	console.log(answer.action);
+	 	
+	 	// console.log(answer.action);
+	 	//subtract one to corelate to correct index in the array
 	 	var idNum = answer.action - 1;
 
 		amount(idNum);
@@ -71,8 +72,7 @@ function amount(selID){
 		message: 'How much would you like to purchase?',
 	 }).then(function(response) {			
 
-	 	console.log(response.amount);
-		console.log('checkTwo');
+	 	// console.log(response.amount);
 		var amnt =  response.amount;
 		checkInventory(selID, amnt);
 
@@ -86,24 +86,23 @@ function checkInventory(itemSelected, number){
 	connection.query('SELECT ID, Product_Name, Price, STOCK_QUANTITY FROM bamazon.products', function(err,res){   
     if(err) throw err;
 
-    // console.log(res)
-    console.log('amount ordered' + ' ' + number);
-    console.log(res[itemSelected].STOCK_QUANTITY);
+   
+    console.log('Product:'+ ' '+res[itemSelected].Product_Name + '   '+'Amount: ' + ' ' + number);
+    
 
     if(number < res[itemSelected].STOCK_QUANTITY){
 
     	var itemS = itemSelected +1;
-    	console.log(res[itemSelected].Product_Name)
-
+    	
     	var newQuantity = res[itemSelected].STOCK_QUANTITY - number;
-    	console.log(newQuantity)
+    	
 
     
     	var sql = "UPDATE products SET STOCK_QUANTITY = " + newQuantity + " WHERE ID = " + itemS + ";"
     	connection.query(sql, function(err, outcome) {
 				
 				
-				console.log('new quant should be ' + newQuantity)
+				
 				totalCost(res[itemSelected].Price, number)
 
 			});
@@ -115,7 +114,7 @@ function checkInventory(itemSelected, number){
     {
     	console.log('Insufficient quantity!  Please choose an amount that does not exceed' + ' ' + res[itemSelected].STOCK_QUANTITY);
   		// asks the customer again to purchase a lesser amount
-  		// amount(idNum);
+  		amount(itemSelected);
     }
 
 });
@@ -130,31 +129,8 @@ function totalCost (price, amount){
 	var tax = 1.07;
 	var total = price*amount*tax;
 	
-	console.log('your total cost is: $' + ' ' + total.toFixed(2));
+	console.log('Your TOTAL cost (with tax) is: $' + ' ' + total.toFixed(2));
 	// destroy();
 	process.exit(1);
 }
 
-// constructor for purchase
-// function Purchase (id, product, price){
-
-// 	this.id = id;
-// 	this.product = product;
-// 	this.price = price;
-// 	this.quantity = function(){
-// 		//quantity funciton goes here
-		
-// 	};
-// 	this.inventoryCheck = function (){
-// 				//check inventory function goes here
-// 			}
-
-// 	this.cost = function(){
-// 		//total cost to customer
-// 	};		
-// };
-//  //values come from original prompt
-
-
-
-// var myPurchase = new Purchase ()
