@@ -1,5 +1,5 @@
 var mysql = require('mysql');
-var inquirer = require ('inquirer');
+var inquirer = require('inquirer');
 
 
 
@@ -21,116 +21,108 @@ connection.connect(function(err) {
 
 
 // reads the SQL table and list items
-function listItems(){
+function listItems() {
 
-	connection.query('SELECT ID, Product_Name, Price FROM bamazon.products', function(err,res){   
-    if(err) throw err;
-	console.log('                  ');    
-	console.log('Available Products');
-	console.log('                  ');
-	console.log('ID' + ' '+ 'Products');
-	console.log('--------------------');
+    connection.query('SELECT ID, Product_Name, Price FROM bamazon.products', function(err, res) {
+        if (err) throw err;
+        console.log('                  ');
+        console.log('Available Products');
+        console.log('                  ');
+        console.log('ID' + ' ' + 'Products');
+        console.log('--------------------');
 
-	for(i=0; i<10; i++){
+        for (i = 0; i < 10; i++) {
 
-		console.log(res[i].ID, res[i].Product_Name, res[i].Price);
+            console.log(res[i].ID, res[i].Product_Name, res[i].Price);
 
-			if(i == 9){
-					ask();
-			}
-	}
+            if (i == 9) {
+                ask();
+            }
+        }
 
-});
+    });
 
-	
 }
+
 
 // ask custumer which item they want to purchase
-function ask(){
-	inquirer.prompt({
-		name: 'action',
-		type: 'input',
-		message: 'Enter the ID of the product you want to buy',
-	 }).then(function(answer) {			
-	 	
-	 	// console.log(answer.action);
-	 	//subtract one to corelate to correct index in the array
-	 	var idNum = answer.action - 1;
+function ask() {
+    inquirer.prompt({
+        name: 'action',
+        type: 'input',
+        message: 'Enter the ID of the product you want to buy?',
+    }).then(function(answer) {
 
-		amount(idNum);
+        if(typeof answer.action == 'string'){
+            consoel.log('hello')
+        }else{
+            console.log('bye')
+        }
 
-	});
+        var idNum = answer.action - 1;
 
+        amount(idNum);
+
+    });
 
 }
 
+
 // ask customer how much they would like to purchase
-function amount(selID){
-	inquirer.prompt({
-		name: 'amount',
-		type: 'input',
-		message: 'How much would you like to purchase?',
-	 }).then(function(response) {			
+function amount(selID) {
+    inquirer.prompt({
+        name: 'amount',
+        type: 'input',
+        message: 'How much would you like to purchase?',
+    }).then(function(response) {
 
-	 	// console.log(response.amount);
-		var amnt =  response.amount;
-		checkInventory(selID, amnt);
+        // console.log(response.amount);
+        var amnt = response.amount;
+        checkInventory(selID, amnt);
 
-	});
+    });
 
 }
 
 // checks the inventory and makes sure there is enought to fulfull the order
-function checkInventory(itemSelected, number){
+function checkInventory(itemSelected, number) {
 
-	connection.query('SELECT ID, Product_Name, Price, STOCK_QUANTITY FROM bamazon.products', function(err,res){   
-    if(err) throw err;
+    connection.query('SELECT ID, Product_Name, Price, STOCK_QUANTITY FROM bamazon.products', function(err, res) {
+        if (err) throw err;
 
-   
-    console.log('Product:'+ ' '+res[itemSelected].Product_Name + '   '+'Amount: ' + ' ' + number);
-    
+        console.log('Product:' + ' ' + res[itemSelected].Product_Name + '   ' + 'Amount: ' + ' ' + number);
 
-    if(number < res[itemSelected].STOCK_QUANTITY){
+        if (number < res[itemSelected].STOCK_QUANTITY) {
 
-    	var itemS = itemSelected +1;
-    	
-    	var newQuantity = res[itemSelected].STOCK_QUANTITY - number;
-    	
+            var itemS = itemSelected + 1;
 
-    
-    	var sql = "UPDATE products SET STOCK_QUANTITY = " + newQuantity + " WHERE ID = " + itemS + ";"
-    	connection.query(sql, function(err, outcome) {
-				
-				
-				
-				totalCost(res[itemSelected].Price, number)
+            var newQuantity = res[itemSelected].STOCK_QUANTITY - number;
 
-			});
+            var sql = "UPDATE products SET STOCK_QUANTITY = " + newQuantity + " WHERE ID = " + itemS + ";"
+            connection.query(sql, function(err, outcome) {
 
+                totalCost(res[itemSelected].Price, number)
 
+            });
 
+        } else {
+            console.log('Insufficient quantity!  Please choose an amount that does not exceed' + ' ' + res[itemSelected].STOCK_QUANTITY);
+            // asks the customer again to purchase a lesser amount
+            amount(itemSelected);
+        }
 
-    }else
-    {
-    	console.log('Insufficient quantity!  Please choose an amount that does not exceed' + ' ' + res[itemSelected].STOCK_QUANTITY);
-  		// asks the customer again to purchase a lesser amount
-  		amount(itemSelected);
-    }
-
-});
-
+    });
 
 }
 
+//function calculates total
+function totalCost(price, amount) {
 
-function totalCost (price, amount){
+    // get price here
+    var tax = 1.07;
+    var total = price * amount * tax;
 
-	// get price here
-	var tax = 1.07;
-	var total = price*amount*tax;
-	
-	console.log('Your TOTAL cost (with tax) is: $' + ' ' + total.toFixed(2));
-	// destroy();
-	process.exit(1);
+    console.log('Your TOTAL cost (with tax) is: $' + ' ' + total.toFixed(2));
+    // destroy();
+    process.exit(1);
 }
-
