@@ -125,7 +125,7 @@ function addAmount(product){
         type: 'input',
         message: 'How much inventroy do you want for this product?',
             }).then(function(answer) {
-                console.log('input' +answer.action)
+                
                 addToProduct(product, answer.action);
                 
     });
