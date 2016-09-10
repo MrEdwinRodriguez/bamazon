@@ -50,12 +50,12 @@ function ask() {
             break;
             
             case '3':
-                viewAll()
                 addInventory();
             break;
             
             case '4':
-                addProduct();
+                addNewProduct();
+                // addProduct();
             break;
 
             default:
@@ -80,8 +80,9 @@ function viewAll(){
            
             }
 
+process.exit(1);
     });
-	
+
 }
 
 function lowInventory(){
@@ -94,10 +95,11 @@ function lowInventory(){
     			if(response[i].STOCK_QUANTITY < 10)
     				
     				console.log(response[i].ID, response[i].Product_Name, response[i].Price, response[i].STOCK_QUANTITY);
-    				
-            	}
 
+            	}
+                process.exit(1);
     });
+
 
 }
 
@@ -109,7 +111,7 @@ function addInventory(){
         message: 'What product would you like to add (press ID)?',
             }).then(function(answer) {
 
-                console.log(answer.action)
+              
                 addAmount(answer.action)
     });
 
@@ -123,23 +125,67 @@ function addAmount(product){
         type: 'input',
         message: 'How much inventroy do you want for this product?',
             }).then(function(answer) {
-                console.log(product)
-                console.log(answer.action)
-                add(product, answer.action);
+                console.log('input' +answer.action)
+                addToProduct(product, answer.action);
                 
     });
 
-
-
 }
 
-
-function add(product, amount){
+// adds to inventory 
+function addToProduct(product, amount){
 
     connection.query("UPDATE bamazon.products SET ? WHERE ?", [{
     STOCK_QUANTITY: amount
     }, {
     ID: product
     }], function(err, res) {})
+    
+ process.exit(1);
+}
 
-        }
+
+// ask manager questions to add new product
+function addNewProduct(){
+
+        inquirer.prompt([{
+            name: "id",
+            message: "What is the new ID?"
+        }, {
+            name: "product",
+            message: "What is the new product name?"
+        }, {
+            name: "price",
+            message: "What is the new product price?"
+        }, {
+            name: "department",
+            message: "What department is the new product in ?"
+        }, {
+            name: "quantity",
+            message: "How much of this new product to you want (quantiity)?"
+        }]).then(function(answers) {
+            //INITIALIZES THE VARIABLE newGuy TO BE A Programmer OBJECT WHICH WILL TAKE IN ALL OF THE USER'S ANSWERS TO THE QUESTIONS ABOVE
+
+            console.log(answers)
+
+            addProduct(answers.id, answers.product, answers. price, answers.quantity, answers.department);
+
+        })
+
+}
+
+// adds new product based on input from addNewProduct()
+function addProduct(id, product, price, quantity, department ){
+
+    connection.query("INSERT INTO products SET ?", {
+    ID: id,
+    Product_Name: product,
+    Price: price,
+    STOCK_QUANTITY: quantity,
+    Department_Name: department
+}, function(err, res) {
+
+    process.exit(1);
+});
+
+}
