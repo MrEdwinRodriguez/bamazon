@@ -50,6 +50,7 @@ function ask() {
             break;
             
             case '3':
+                viewAll()
                 addInventory();
             break;
             
@@ -101,12 +102,44 @@ function lowInventory(){
 }
 
 function addInventory(){
+        
+        inquirer.prompt({
+        name: 'action',
+        type: 'input',
+        message: 'What product would you like to add (press ID)?',
+            }).then(function(answer) {
 
-	    connection.query('UPDATE bamazon.products SET STOCK_QUANTITY ? WHERE ID ?', function(err, response) {
-        if (err) throw err;
-
-    					
-
+                console.log(answer.action)
+                addAmount(answer.action)
     });
 
 }
+
+
+function addAmount(product){
+
+        inquirer.prompt({
+        name: 'action',
+        type: 'input',
+        message: 'How much inventroy do you want for this product?',
+            }).then(function(answer) {
+                console.log(product)
+                console.log(answer.action)
+                add(product, answer.action);
+                
+    });
+
+
+
+}
+
+
+function add(product, amount){
+
+    connection.query("UPDATE bamazon.products SET ? WHERE ?", [{
+    STOCK_QUANTITY: amount
+    }, {
+    ID: product
+    }], function(err, res) {})
+
+        }
